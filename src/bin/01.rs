@@ -11,9 +11,8 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
     left.sort();
     right.sort();
-    for i in 0..left.len() {
-        let diff:u32 = (left[i] - right[i]).abs() as u32;
-        result += diff;
+    for (l, r) in left.iter().zip(right.iter()) {
+        result += (l - r).abs() as u32;
     }
     Some(result)
 }
@@ -28,9 +27,9 @@ pub fn part_two(input: &str) -> Option<u32> {
         right.push(parts[1].parse().expect("Not a valid number"));
     }
 
-    for number in left {
-        let occurences = right.iter().filter(|&n| *n == number).count() as i32;
-        result += (number*occurences) as u32;
+    for &number in &left {
+        let occurences = right.iter().filter(|&&n| n == number).count() as u32;
+        result += number as u32 *occurences;
     }
     Some (result)
 }
