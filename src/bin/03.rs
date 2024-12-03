@@ -5,15 +5,12 @@ pub fn part_one(input: &str) -> Option<u32> {
     let mut result: u32 = 0;
     let re = Regex::new(r"mul\((?<f1>\d{1,3}),(?<f2>\d{1,3})\)").unwrap();
 
-    let multiplications : Vec<(u32, u32)> = re.captures_iter(input).map(|caps| {
-        let f1 = caps.name("f1").unwrap().as_str().parse().expect("Not a valid number");
-        let f2 = caps.name("f2").unwrap().as_str().parse().expect("Not a valid number");
-        (f1, f2)
-    }).collect();
+    result = re.captures_iter(input).map(|caps| {
+        let f1:u32 = caps.name("f1").unwrap().as_str().parse().expect("Not a valid number");
+        let f2:u32 = caps.name("f2").unwrap().as_str().parse().expect("Not a valid number");
+        f1 * f2
+    }).sum();
 
-    for (f1, f2) in multiplications {
-        result += f1*f2;
-    }
     Some(result)
 }
 
