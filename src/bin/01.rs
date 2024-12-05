@@ -1,7 +1,7 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut result:u32 = 0;
+    let mut result: u32 = 0;
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
     for line in input.lines() {
@@ -18,7 +18,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut result:u32 = 0;
+    let mut result: u32 = 0;
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
     for line in input.lines() {
@@ -29,9 +29,9 @@ pub fn part_two(input: &str) -> Option<u32> {
 
     for &number in &left {
         let occurences = right.iter().filter(|&&n| n == number).count() as u32;
-        result += number as u32 *occurences;
+        result += number as u32 * occurences;
     }
-    Some (result)
+    Some(result)
 }
 
 #[cfg(test)]
