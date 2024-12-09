@@ -170,22 +170,6 @@ pub fn part_two(input: &str) -> Option<u32> {
     let (mut matrix, start_pos) = parse(input);
     let guard = Guard::new(start_pos.0, start_pos.1);
 
-/*    matrix[(3,6)] = '#';
-    let sim_guard = guard.clone();
-    let mut simulation = GuardSimulation::new(matrix, sim_guard);
-    loop {
-        simulation.step();
-        match simulation.state {
-            SimState::Running => {},
-            SimState::GuardLooped => {
-                result += 1;
-                break;
-            },
-            _ => {
-                // Don't care for now
-            }
-        }
-    }*/
     for x in 0..matrix.rows {
         for y in 0.. matrix.columns {
             if (x,y) != start_pos && matrix[(x,y)] != '#'  {
