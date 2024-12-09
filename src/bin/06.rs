@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use itertools::Itertools;
 use pathfinding::matrix::Matrix;
 
 advent_of_code::solution!(6);
@@ -144,7 +143,7 @@ fn parse(input: &str) -> (Matrix<char>, (usize,usize)) {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut result: u32 = 0;
+    let result: u32;
     let (matrix, start_pos) = parse(input);
     let guard = Guard::new(start_pos.0, start_pos.1);
     let mut sim: GuardSimulation = GuardSimulation::new(matrix, guard);
@@ -166,37 +165,74 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut result: u32 = 0;
-    let (mut matrix, start_pos) = parse(input);
+    let (matrix, start_pos) = parse(input);
     let guard = Guard::new(start_pos.0, start_pos.1);
+    let mut sim: GuardSimulation = GuardSimulation::new(matrix.clone(), guard.clone());
+    let guard_walk: HashSet<(usize, usize, Direction)>;
+    let mut successful_positions: HashSet<(usize, usize)> = HashSet::new();
+    let mut candidates: HashSet<(usize, usize)> = HashSet::new();
+    loop {
+        sim.step();
+        match sim.state {
+            SimState::Running => {
+            },
+            SimState::GuardExited(_fields_visited) => {
+                guard_walk = sim.guard.visited;
+                break;
+            },
+            _ => {
+                // Don't care for now
+            }
+        }
+    }
 
-    for x in 0..matrix.rows {
-        for y in 0.. matrix.columns {
-            if (x,y) != start_pos && matrix[(x,y)] != '#'  {
-                let mut candidate_matrix = matrix.clone();
-                candidate_matrix[(x,y)]='#';
-                let sim_guard = guard.clone();
-                let mut simulation = GuardSimulation::new(candidate_matrix, sim_guard);
-                'simulation: loop {
-                    simulation.step();
-                    match simulation.state {
-                        SimState::Running => {},
-                        SimState::GuardExited(fields_visited) => {
-                            break;
-                        }
-                        SimState::GuardLooped => {
-                            result += 1;
-                            break 'simulation;
-                        },
-                        _ => {
-                            // Don't care for now
-                        }
-                    }
+    for (x,y,d) in &guard_walk {
+        let obstacle: (isize, isize);
+        match d {
+            Direction::Up => {
+                obstacle = (*x as isize, (*y as isize - 1));
+            }
+            Direction::Right => {
+                obstacle = ((*x + 1) as isize, *y as isize);
+            }
+            Direction::Down => {
+                obstacle = (*x as isize, (*y + 1) as isize);
+            }
+            Direction::Left => {
+                obstacle = ((*x as isize - 1), *y as isize)
+            }
+        }
+        if obstacle.0 < 0 || obstacle.0 >= matrix.columns as isize || obstacle.1 < 0 || obstacle.1 >= matrix.rows as isize {
+            continue;
+        } else {
+            candidates.insert((obstacle.0 as usize, obstacle.1 as usize));
+        }
+    }
+
+    for candidate in &candidates {
+        let mut sim_matrix = matrix.clone();
+        let sim_guard = guard.clone();
+        sim_matrix[(candidate.0, candidate.1)]= '#';
+        let mut inner_sim = GuardSimulation::new(sim_matrix, sim_guard);
+        'simulation: loop {
+            inner_sim.step();
+            match inner_sim.state {
+                SimState::Running => {},
+                SimState::GuardExited(_fields_visited) => {
+                    break;
+                }
+                SimState::GuardLooped => {
+                    successful_positions.insert((candidate.0, candidate.1));
+                    break 'simulation;
+                },
+                _ => {
+                    // Don't care for now
                 }
             }
         }
     }
-    Some(result)
+
+    Some(successful_positions.len() as u32)
 }
 
 #[cfg(test)]
