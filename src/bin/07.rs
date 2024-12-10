@@ -1,13 +1,16 @@
 advent_of_code::solution!(7);
 
 fn parse(input: &str) -> Vec<(usize, Vec<usize>)> {
-    let mut result:Vec<(usize, Vec<usize>)> = Vec::new();
+    let mut result: Vec<(usize, Vec<usize>)> = Vec::new();
 
     for line in input.lines() {
         let (first, rest) = line.split_once(": ").unwrap();
-        let operands = rest.split_whitespace().map(|o| o.parse().unwrap()).collect();
+        let operands = rest
+            .split_whitespace()
+            .map(|o| o.parse().unwrap())
+            .collect();
         let value: usize = first.parse().unwrap();
-        result.push((value ,operands));
+        result.push((value, operands));
     }
 
     result
@@ -18,20 +21,24 @@ pub fn part_one(input: &str) -> Option<usize> {
     let equations = parse(input);
 
     for (value, operands) in equations {
-    let combinations = 2u32.pow((operands.len() - 1) as u32);
-    for mut i in 0..combinations {
-        let mut iter = operands.iter();
-        let mut test = *iter.next().unwrap();
-        for &number in iter {
-            test = if i & 1 == 0 { test + number } else { test * number };
-            i >>= 1;
-        }
-        if test == value {
-            result += value;
-            break;
+        let combinations = 2u32.pow((operands.len() - 1) as u32);
+        for mut i in 0..combinations {
+            let mut iter = operands.iter();
+            let mut test = *iter.next().unwrap();
+            for &number in iter {
+                test = if i & 1 == 0 {
+                    test + number
+                } else {
+                    test * number
+                };
+                i >>= 1;
+            }
+            if test == value {
+                result += value;
+                break;
+            }
         }
     }
-}
 
     Some(result)
 }

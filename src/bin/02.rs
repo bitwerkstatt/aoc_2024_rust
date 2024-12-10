@@ -3,7 +3,7 @@ advent_of_code::solution!(2);
 fn check_sequence(sequence: &Vec<u32>) -> bool {
     let numbers = sequence;
     let mut last_diff: i32 = 0;
-    let mut diff: i32 = 0;
+    let mut diff: i32;
     let mut valid: bool = true;
     for i in 1..numbers.len() {
         diff = numbers[i] as i32 - numbers[i - 1] as i32;

@@ -2,7 +2,7 @@ advent_of_code::solution!(3);
 use regex::Regex;
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut result: u32 = 0;
+    let result: u32;
     let re = Regex::new(r"mul\((?<f1>\d{1,3}),(?<f2>\d{1,3})\)").unwrap();
 
     result = re

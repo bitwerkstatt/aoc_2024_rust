@@ -1,22 +1,19 @@
 use std::collections::HashSet;
-use itertools::Itertools;
 
 advent_of_code::solution!(5);
 
 fn parse(input: &str) -> (HashSet<(u32, u32)>, Vec<Vec<u32>>) {
-    let rules: HashSet<(u32,u32)> = input
+    let rules: HashSet<(u32, u32)> = input
         .lines()
         .take_while(|line| !line.is_empty())
         .filter_map(|line| {
-            line.split_once('|').map(|(a,b)| (a.parse().unwrap(), b.parse().unwrap()))
+            line.split_once('|')
+                .map(|(a, b)| (a.parse().unwrap(), b.parse().unwrap()))
         })
         .collect();
 
     let mut updates: Vec<Vec<u32>> = Vec::new();
-    let update_lines: Vec<&str> = input
-        .lines()
-        .skip(rules.len() + 1)
-        .collect();
+    let update_lines: Vec<&str> = input.lines().skip(rules.len() + 1).collect();
 
     for line in update_lines {
         let mut update: Vec<u32> = Vec::new();
@@ -25,11 +22,9 @@ fn parse(input: &str) -> (HashSet<(u32, u32)>, Vec<Vec<u32>>) {
             update.push(element.parse().unwrap())
         }
         updates.push(update);
-
     }
 
     (rules, updates)
-
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -39,7 +34,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     for update in updates {
         let mut valid: bool = true;
         'outer: for i in 0..update.len() {
-            for j in i+1..update.len() {
+            for j in i + 1..update.len() {
                 if !rules.contains(&(update[i], update[j])) {
                     valid = false;
                     break 'outer;
@@ -47,7 +42,7 @@ pub fn part_one(input: &str) -> Option<u32> {
             }
         }
         if valid {
-            result += update[update.len()/2];
+            result += update[update.len() / 2];
         }
     }
 
@@ -61,7 +56,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     for mut update in updates {
         let mut valid: bool = true;
         'outer: for i in 0..update.len() {
-            for j in i+1..update.len() {
+            for j in i + 1..update.len() {
                 if !rules.contains(&(update[i], update[j])) {
                     valid = false;
                     break 'outer;
@@ -69,14 +64,14 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
         }
         if !valid {
-            update.sort_by(|i,j| {
+            update.sort_by(|i, j| {
                 if rules.contains(&(*i, *j)) {
                     std::cmp::Ordering::Less
                 } else {
                     std::cmp::Ordering::Greater
                 }
             });
-            result += update[update.len()/2];
+            result += update[update.len() / 2];
         }
     }
 
